@@ -1,0 +1,117 @@
+import tkinter as tk
+from tkinter import ttk
+import tkinter.messagebox as tkmes
+import sqlite3
+import time
+import datetime
+
+LARGE_FONT = ("Verdana", 12)
+NORM_FONT = ("Verdana", 10)
+SMALL_FONT = ("Verdana", 8)
+
+conn = sqlite3.connect('comicenv.db')
+c = conn.cursor()
+
+def popupmsg(msg):
+    popup = tk.Tk()
+    popup.wm_title("!")
+    label = ttk.Label(popup, text=msg, font=NORM_FONT)
+    label.pack(side="top", fill="x", pady=30, padx=10)
+    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
+def confirmExit():
+    confirm = tkmes.askquestion("Confirm Quit", "Are you sure you want to exit?")
+    if confirm == 'yes':
+        quit()
+
+class ComicEnv(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        menubar = tk.Menu(container)
+
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="New Database", command=lambda: popupmsg("Not supported just yet"))
+        filemenu.add_command(label="Change Database", command=lambda:popupmsg("Not supported just yet"))
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=confirmExit)
+        menubar.add_cascade(label="File", menu=filemenu)
+
+        navmenu = tk.Menu(menubar, tearoff=0)
+        navmenu.add_command(label="Overview", command=lambda: popupmsg("Should navigate to overview"))
+        navmenu.add_command(label="Last Record", command=lambda: popupmsg("Navigate to the previously displayed record"))
+        navmenu.add_command(label="New Record", command=lambda: popupmsg("Navigate to a new Record entry form"))
+        menubar.add_cascade(label="Navigation", menu=navmenu)
+
+        helpmenu = tk.Menu(menubar, tearoff=0)
+        helpmenu.add_command(label="About ComicEnv", command=lambda: popupmsg("""ComicEnv - Copyright 2015
+By Andrew Edwards
+Contact: SilvinLight@Gmail.com
+
+Covered under the MIT license"""))
+        helpmenu.add_separator()
+        helpmenu.add_command(label="Help", command=lambda: popupmsg("This should contain a help wiki"))
+        menubar.add_cascade(label="Help", menu=helpmenu)
+
+        tk.Tk.config(self, menu=menubar)
+
+        self.frames = {}
+
+        for F in (Overview, LastRecord, NewProduct):
+            frame = F(container, self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0, sticky="nesw")
+
+        self.show_frame(NewProduct)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+class Overview(tk.Frame):
+    """Initial start page. Main hub of program."""
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+
+        tree = ttk.Treeview(parent)
+        # add a treeview that will pull informatio from the sqlite3 db
+
+class LastRecord(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Page One", font=LARGE_FONT)
+        label.pack(padx=10, pady=10)
+
+class NewProduct(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)                
+
+        tLabel = tk.Label(self, text="Title: ", font=NORM_FONT).grid(row=0, padx=5, pady=5)
+        qLabel = tk.Label(self, text="Quantity: ", font=NORM_FONT).grid(row=1, padx=5, pady=5)
+        pLabel = tk.Label(self, text="Price: ", font=NORM_FONT).grid(row=2, padx=5, pady=5)
+        tEntry = tk.Entry(self).grid(row=0, column=1, padx=5, pady=5) # Add validation in the future
+        qEntry = tk.Entry(self).grid(row=1, column=1, padx=5, pady=5)
+        pEntry = tk.Entry(self).grid(row=2, column=1, padx=5, pady=5)
+
+        saveButton = ttk.Button(self, text="Save", command=lambda: popupmsg("Not Functioning Yet"))
+        saveButton.grid(row=4, padx=5)
+        cancelButton = ttk.Button(self, text="Cancel", command=lambda: popupmsg("Not functioning yet."))
+        cancelButton.grid(row=4, column=1, padx=5)
+        
+        
+
+app = ComicEnv()
+app.geometry("800x600")
+app.mainloop()
