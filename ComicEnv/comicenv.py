@@ -9,8 +9,7 @@ LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
 SMALL_FONT = ("Verdana", 8)
 
-conn = sqlite3.connect('comicenv.db')
-c = conn.cursor()
+date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime("%Y-%m-%d %H:%M:%S")) 
 
 def popupmsg(msg):
     popup = tk.Tk()
@@ -84,7 +83,7 @@ class Overview(tk.Frame):
         self.parent = parent
 
         tree = ttk.Treeview(parent)
-        # add a treeview that will pull informatio from the sqlite3 db
+        # add a treeview that will pull information from the sqlite3 db
 
 class LastRecord(tk.Frame):
 
@@ -98,18 +97,26 @@ class NewProduct(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)                
 
-        tLabel = tk.Label(self, text="Title: ", font=NORM_FONT).grid(row=0, padx=5, pady=5)
-        qLabel = tk.Label(self, text="Quantity: ", font=NORM_FONT).grid(row=1, padx=5, pady=5)
-        pLabel = tk.Label(self, text="Price: ", font=NORM_FONT).grid(row=2, padx=5, pady=5)
-        tEntry = tk.Entry(self).grid(row=0, column=1, padx=5, pady=5) # Add validation in the future
-        qEntry = tk.Entry(self).grid(row=1, column=1, padx=5, pady=5)
-        pEntry = tk.Entry(self).grid(row=2, column=1, padx=5, pady=5)
-
-        saveButton = ttk.Button(self, text="Save", command=lambda: popupmsg("Not Functioning Yet"))
+        tLabel = ttk.Label(self, text="Title: ", font=NORM_FONT).grid(row=0, padx=5, pady=5)
+        qLabel = ttk.Label(self, text="Quantity: ", font=NORM_FONT).grid(row=1, padx=5, pady=5)
+        pLabel = ttk.Label(self, text="Price: $", font=NORM_FONT).grid(row=2, padx=5, pady=5)
+        te = ttk.Entry(self).grid(row=0, column=1, padx=5, pady=5) # Add validation in the future
+        qe = ttk.Entry(self).grid(row=1, column=1, padx=5, pady=5)
+        pe = ttk.Entry(self).grid(row=2, column=1, padx=5, pady=5)
+        
+        saveButton = ttk.Button(self, text="Save", command=lambda: self.save(self.te.get(), self.qe.get(), self.pe.get()))
+        #WHY IS THIS WRONG!!!!!???!?!?!?!?!?
         saveButton.grid(row=4, padx=5)
         cancelButton = ttk.Button(self, text="Cancel", command=lambda: popupmsg("Not functioning yet."))
         cancelButton.grid(row=4, column=1, padx=5)
-        
+
+    def save(self, title, quantity, price):
+        conn = sqlite3.connect("ComicEnv.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO cdata(unix, datestamp, title, quantity, price) VALUES (?,?,?,?,?)",
+                  (time.time(), date, title, quantity, price))
+        conn.commit()
+        conn.close()
         
 
 app = ComicEnv()
