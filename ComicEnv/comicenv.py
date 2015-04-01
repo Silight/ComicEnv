@@ -44,9 +44,9 @@ class ComicEnv(tk.Tk):
         menubar.add_cascade(label="File", menu=filemenu)
 
         navmenu = tk.Menu(menubar, tearoff=0)
-        navmenu.add_command(label="Overview", command=lambda: popupmsg("Should navigate to overview"))
-        navmenu.add_command(label="Last Record", command=lambda: popupmsg("Navigate to the previously displayed record"))
-        navmenu.add_command(label="New Record", command=lambda: popupmsg("Navigate to a new Record entry form"))
+        navmenu.add_command(label="Overview", command=lambda: popupmsg('Not functioning yet.'))
+        navmenu.add_command(label="Last Record", command=lambda: popupmsg('Not functioning yet'))
+        navmenu.add_command(label="New Record", command=lambda: popupmsg('Not functioning yet'))
         menubar.add_cascade(label="Navigation", menu=navmenu)
 
         helpmenu = tk.Menu(menubar, tearoff=0)
@@ -59,6 +59,8 @@ Covered under the MIT license"""))
         helpmenu.add_command(label="Help", command=lambda: popupmsg("This should contain a help wiki"))
         menubar.add_cascade(label="Help", menu=helpmenu)
 
+        
+
         tk.Tk.config(self, menu=menubar)
 
         self.frames = {}
@@ -68,7 +70,7 @@ Covered under the MIT license"""))
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nesw")
 
-        self.show_frame(NewProduct)
+        self.show_frame(Overview)
 
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -82,8 +84,24 @@ class Overview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
 
-        tree = ttk.Treeview(parent)
-        # add a treeview that will pull information from the sqlite3 db
+        self.tree = ttk.Treeview(self)
+        ysb = ttk.Scrollbar(self, orient='vertical', command=self.tree.yview)
+        self.tree.configure(yscroll=ysb.set)
+        ysb.config(command=self.tree.yview)
+        self.tree.heading('#0', text='Title', anchor='w')
+
+        
+        self.tree["columns"]=("quantity", "price", "date")
+        self.tree.column("quantity")
+        self.tree.column("price")
+        self.tree.column("date")
+        self.tree.heading("quantity", text="Quant." )
+        self.tree.heading("price", text="Price" )
+        self.tree.heading("date", text="Date" )
+
+        self.tree.pack()
+        
+        # Create a function for poplation of information from db
 
 class LastRecord(tk.Frame):
 
@@ -100,15 +118,24 @@ class NewProduct(tk.Frame):
         tLabel = ttk.Label(self, text="Title: ", font=NORM_FONT).grid(row=0, padx=5, pady=5)
         qLabel = ttk.Label(self, text="Quantity: ", font=NORM_FONT).grid(row=1, padx=5, pady=5)
         pLabel = ttk.Label(self, text="Price: $", font=NORM_FONT).grid(row=2, padx=5, pady=5)
-        te = ttk.Entry(self).grid(row=0, column=1, padx=5, pady=5) # Add validation in the future
-        qe = ttk.Entry(self).grid(row=1, column=1, padx=5, pady=5)
-        pe = ttk.Entry(self).grid(row=2, column=1, padx=5, pady=5)
+        self.te = ttk.Entry(self)
+        self.te.grid(row=0, column=1, padx=5, pady=5)
+        self.qe = ttk.Entry(self)
+        self.qe.grid(row=1, column=1, padx=5, pady=5)
+        self.pe = ttk.Entry(self)
+        self.pe.grid(row=2, column=1, padx=5, pady=5)
         
-        saveButton = ttk.Button(self, text="Save", command=lambda: self.save(self.te.get(), self.qe.get(), self.pe.get()))
-        #WHY IS THIS WRONG!!!!!???!?!?!?!?!?
+        saveButton = ttk.Button(self, text="Save", command=self.on_save)
         saveButton.grid(row=4, padx=5)
-        cancelButton = ttk.Button(self, text="Cancel", command=lambda: popupmsg("Not functioning yet."))
+        cancelButton = ttk.Button(self, text="Cancel", command=lambda: controller.show_frame(Overview))
         cancelButton.grid(row=4, column=1, padx=5)
+
+    def on_save(self):
+        title = self.te.get()
+        quantity = self.qe.get()
+        price = self.pe.get()
+        self.save(title, quantity, price)
+        
 
     def save(self, title, quantity, price):
         conn = sqlite3.connect("ComicEnv.db")
@@ -120,5 +147,4 @@ class NewProduct(tk.Frame):
         
 
 app = ComicEnv()
-app.geometry("800x600")
 app.mainloop()
