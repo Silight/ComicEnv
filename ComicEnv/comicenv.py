@@ -144,6 +144,7 @@ class NewProduct(tk.Frame):
                   (time.time(), date, title, quantity, price))
         conn.commit()
         conn.close()
+        # Add Confirmation of success. Return to Overviews
         
 
 app = ComicEnv()
