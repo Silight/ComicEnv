@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as tkmes
 import sqlite3
-import time
 import datetime
+import time
 
 LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
@@ -56,7 +56,7 @@ Contact: SilvinLight@Gmail.com
 
 Covered under the MIT license"""))
         helpmenu.add_separator()
-        helpmenu.add_command(label="Help", command=lambda: popupmsg("This should contain a help wiki"))
+        helpmenu.add_command(label="Help", command=lambda: popupmsg("Need help? Call Me!"))
         menubar.add_cascade(label="Help", menu=helpmenu)
 
         
@@ -101,7 +101,7 @@ class Overview(tk.Frame):
 
         self.tree.pack()
         
-        # Create a function for poplation of information from db
+        # Create a function for population of information from db
 
 class LastRecord(tk.Frame):
 
