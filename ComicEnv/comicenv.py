@@ -12,6 +12,7 @@ SMALL_FONT = ("Verdana", 8)
 date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime("%Y-%m-%d %H:%M:%S")) 
 
 def popupmsg(msg):
+    # Creates a popup message
     popup = tk.Tk()
     popup.wm_title("!")
     label = ttk.Label(popup, text=msg, font=NORM_FONT)
@@ -21,6 +22,7 @@ def popupmsg(msg):
     popup.mainloop()
 
 def confirmExit():
+    # Exits the program
     confirm = tkmes.askquestion("Confirm Quit", "Are you sure you want to exit?")
     if confirm == 'yes':
         quit()
@@ -111,26 +113,35 @@ class LastRecord(tk.Frame):
         label.pack(padx=10, pady=10)
 
 class NewProduct(tk.Frame):
+    """New product entry."""
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)                
+        tk.Frame.__init__(self, parent)
 
+        # Add Labels
         tLabel = ttk.Label(self, text="Title: ", font=NORM_FONT).grid(row=0, padx=5, pady=5)
         qLabel = ttk.Label(self, text="Quantity: ", font=NORM_FONT).grid(row=1, padx=5, pady=5)
         pLabel = ttk.Label(self, text="Price: $", font=NORM_FONT).grid(row=2, padx=5, pady=5)
+
+        # Add Entry
         self.te = ttk.Entry(self)
-        self.te.grid(row=0, column=1, padx=5, pady=5)
-        self.qe = ttk.Entry(self)
-        self.qe.grid(row=1, column=1, padx=5, pady=5)
         self.pe = ttk.Entry(self)
-        self.pe.grid(row=2, column=1, padx=5, pady=5)
-        
+        self.qe = ttk.Entry(self)
+
+        # Add Buttons
         saveButton = ttk.Button(self, text="Save", command=self.on_save)
-        saveButton.grid(row=4, padx=5)
         cancelButton = ttk.Button(self, text="Cancel", command=lambda: controller.show_frame(Overview))
+
+        # Pack the widgets
         cancelButton.grid(row=4, column=1, padx=5)
+        saveButton.grid(row=4, padx=5)
+
+        self.te.grid(row=0, column=1, padx=5, pady=5)
+        self.qe.grid(row=1, column=1, padx=5, pady=5)
+        self.pe.grid(row=2, column=1, padx=5, pady=5)
 
     def on_save(self):
+        # Gets the user input
         title = self.te.get()
         quantity = self.qe.get()
         price = self.pe.get()
@@ -138,6 +149,7 @@ class NewProduct(tk.Frame):
         
 
     def save(self, title, quantity, price):
+        # Saves the user input to the database
         conn = sqlite3.connect("ComicEnv.db")
         c = conn.cursor()
         c.execute("INSERT INTO cdata(unix, datestamp, title, quantity, price) VALUES (?,?,?,?,?)",
