@@ -52,8 +52,10 @@ class ComicEnv(tk.Tk):
         menubar.add_cascade(label="Navigation", menu=navmenu)
 
         helpmenu = tk.Menu(menubar, tearoff=0)
-        helpmenu.add_command(label="About ComicEnv", command=lambda: popupmsg("""ComicEnv - Copyright 2015
-By Andrew Edwards
+        helpmenu.add_command(label="About ComicEnv", command=lambda: popupmsg("""
+ComicEnv - Copyright 2015
+
+      By Andrew Edwards
 Contact: SilvinLight@Gmail.com
 
 Covered under the MIT license"""))
@@ -86,13 +88,12 @@ class Overview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
 
+        # Create Treeview to hold information
         self.tree = ttk.Treeview(self)
         ysb = ttk.Scrollbar(self, orient='vertical', command=self.tree.yview)
         self.tree.configure(yscroll=ysb.set)
         ysb.config(command=self.tree.yview)
         self.tree.heading('#0', text='Title', anchor='w')
-
-        
         self.tree["columns"]=("quantity", "price", "date")
         self.tree.column("quantity")
         self.tree.column("price")
@@ -101,8 +102,22 @@ class Overview(tk.Frame):
         self.tree.heading("price", text="Price" )
         self.tree.heading("date", text="Date" )
 
-        self.tree.pack()
-        
+        # Add button for search
+        searchButton = ttk.Button(self, text="Search", command=self.filter)
+        # Add Entry for search
+        searchEntry = ttk.Entry(self)
+        searchEntry.delete(0, last="end")
+
+
+        # Pack the widgets
+        self.tree.pack(fill="both", expand=True)
+        searchButton.pack(side="left", padx=4, pady=2)
+        searchEntry.pack(side="left", padx=4, pady=2)
+
+
+    def filter(self):
+        popupmsg("Not functioning yet")
+
         # Create a function for population of information from db
 
 class LastRecord(tk.Frame):
@@ -129,7 +144,7 @@ class NewProduct(tk.Frame):
         self.qe = ttk.Entry(self)
 
         # Add Buttons
-        saveButton = ttk.Button(self, text="Save", command=self.on_save)
+        saveButton = ttk.Button(self, text="Save", command=self.onSave)
         cancelButton = ttk.Button(self, text="Cancel", command=lambda: controller.show_frame(Overview))
 
         # Pack the widgets
@@ -140,7 +155,7 @@ class NewProduct(tk.Frame):
         self.qe.grid(row=1, column=1, padx=5, pady=5)
         self.pe.grid(row=2, column=1, padx=5, pady=5)
 
-    def on_save(self):
+    def onSave(self):
         # Gets the user input
         title = self.te.get()
         quantity = self.qe.get()
@@ -156,7 +171,8 @@ class NewProduct(tk.Frame):
                   (time.time(), date, title, quantity, price))
         conn.commit()
         conn.close()
-        # Add Confirmation of success. Return to Overviews
+        popupmsg("Success!")
+        # Return to Overviews
         
 
 app = ComicEnv()
