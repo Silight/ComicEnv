@@ -27,6 +27,7 @@ def confirmExit():
     if confirm == 'yes':
         quit()
 
+
 class ComicEnv(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -62,8 +63,6 @@ Covered under the MIT license"""))
         helpmenu.add_separator()
         helpmenu.add_command(label="Help", command=lambda: popupmsg("Need help? Call Me!"))
         menubar.add_cascade(label="Help", menu=helpmenu)
-
-        
 
         tk.Tk.config(self, menu=menubar)
 
@@ -103,22 +102,29 @@ class Overview(tk.Frame):
         self.tree.heading("date", text="Date" )
 
         # Add button for search
-        searchButton = ttk.Button(self, text="Search", command=self.filter)
+        searchButton = ttk.Button(self, text="Search", command=self.onFilter)
         # Add Entry for search
         searchEntry = ttk.Entry(self)
         searchEntry.delete(0, last="end")
-
 
         # Pack the widgets
         self.tree.pack(fill="both", expand=True)
         searchButton.pack(side="left", padx=4, pady=2)
         searchEntry.pack(side="left", padx=4, pady=2)
 
+    def onFilter(self):
+        """Filter Callback"""
+        searchField = self.searchEntry.get()
+        self.filter(searchField)
 
-    def filter(self):
-        popupmsg("Not functioning yet")
+    def filter(self, sf):
+        conn = sqlite3.connect("ComicEnv.db")
+        c = conn.cursor()
+        c.execute("FROM cdata SELECT * WHERE (sf) VALUES (?)",
+            (sf))
+        conn.close()
+        # This is most likely broken. Has not been tested. 
 
-        # Create a function for population of information from db
 
 class LastRecord(tk.Frame):
 
@@ -126,6 +132,7 @@ class LastRecord(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Page One", font=LARGE_FONT)
         label.pack(padx=10, pady=10)
+
 
 class NewProduct(tk.Frame):
     """New product entry."""
