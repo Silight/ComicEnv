@@ -209,4 +209,7 @@ class NewProduct(tk.Frame):
         
 
 app = ComicEnv()
+app.minsize(450, 270)
+app.wm_iconbitmap('comicenv.ico')
+app.title("ComicEnv")
 app.mainloop()
