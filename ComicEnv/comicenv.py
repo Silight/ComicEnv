@@ -107,10 +107,15 @@ class Overview(tk.Frame):
         searchEntry = ttk.Entry(self)
         searchEntry.delete(0, last="end")
 
+        # Add Clear button
+        clearButton = ttk.Button(self, text="Clear", command=self.clearCmd)
+
         # Pack the widgets
         self.tree.pack(fill="both", expand=True)
         searchButton.pack(side="left", padx=4, pady=2)
         searchEntry.pack(side="left", padx=4, pady=2)
+
+        clearButton.pack(side="left", padx=4, pady=2)
 
     def onFilter(self):
         """Filter Callback"""
@@ -123,7 +128,11 @@ class Overview(tk.Frame):
         c.execute("FROM cdata SELECT * WHERE (sf) VALUES (?)",
             (sf))
         conn.close()
-        # This is most likely broken. Has not been tested. 
+        # This is most likely broken. Has not been tested.
+
+    def clearCmd(self):
+        """ Clears the treeview"""
+        self.tree.delete(*self.tree.get_children())
 
 
 class LastRecord(tk.Frame):
