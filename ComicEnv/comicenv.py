@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as tkmes
+import tkinter.filedialog as fileDialog
 import sqlite3
 import datetime
 import time
+import csv
 
 LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
@@ -114,7 +116,7 @@ class Overview(tk.Frame):
         newButton = ttk.Button(self, text="New Product", command=lambda: controller.show_frame(NewProduct))
 
         # Add import button
-        importButton = ttk.Button(self, text="Import CSV", command=lambda: popupmsg("Not functioning yet"))
+        importButton = ttk.Button(self, text="Import CSV", command=self.importCmd)
 
         # Pack the widgets
         self.tree.pack(fill="both", expand=True)
@@ -140,6 +142,11 @@ class Overview(tk.Frame):
     def clearCmd(self):
         """ Clears the treeview"""
         self.tree.delete(*self.tree.get_children())
+
+    def importCmd(self):
+        """Import a .csv file and store it in the db"""
+        self.fileName = fileDialog.askopenfilename(filetypes = (("Spread Sheet Files", "*.csv"),
+                                                   ("All Files", "*.*")))
 
 
 class LastRecord(tk.Frame):
