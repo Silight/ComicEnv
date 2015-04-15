@@ -163,13 +163,13 @@ class NewProduct(tk.Frame):
 
         # Add Entry
         self.te = ttk.Entry(self)
-        self.pe = ttk.Entry(self)
         self.qe = ttk.Entry(self)
+        self.pe = ttk.Entry(self)
 
         # Add Buttons
         saveButton = ttk.Button(self, text="Save", command=self.onSave)
-        clearButton =  ttk.Button(self, text="Clear", command=self.clearCmd)
         cancelButton = ttk.Button(self, text="Cancel", command=lambda: controller.show_frame(Overview))
+        clearButton =  ttk.Button(self, text="Clear", command=self.clearCmd)
 
         # Pack the widgets
         cancelButton.grid(row=4, column=1, padx=2)
@@ -181,11 +181,13 @@ class NewProduct(tk.Frame):
         self.pe.grid(row=2, column=1, padx=5, pady=5)
 
     def clearCmd(self):
-        """Clear the form"""
-        popupmsg("Not funtioning yet")
+        """Clear the entry widgets"""
+        self.te.delete(0, 'end')
+        self.qe.delete(0, 'end')
+        self.pe.delete(0, 'end')
 
     def onSave(self):
-        # Checks if entry is blank
+        # Checks if title entry is blank
         if not self.te.get():
             popupmsg("Oops, it looks like your book is missing it's title!")
         else:
@@ -194,7 +196,6 @@ class NewProduct(tk.Frame):
             quantity = self.qe.get()
             price = self.pe.get()
             self.save(title, quantity, price)
-        
 
     def save(self, title, quantity, price):
         # Saves the user input to the database
@@ -204,6 +205,7 @@ class NewProduct(tk.Frame):
                   (time.time(), date, title, quantity, price))
         conn.commit()
         conn.close()
+        self.clearCmd()
         popupmsg("Success!")
         # Return to Overviews
         
