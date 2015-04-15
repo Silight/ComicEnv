@@ -110,11 +110,18 @@ class Overview(tk.Frame):
         # Add Clear button
         clearButton = ttk.Button(self, text="Clear", command=self.clearCmd)
 
+        # Add Navigation button
+        newButton = ttk.Button(self, text="New Product", command=lambda: controller.show_frame(NewProduct))
+
+        # Add import button
+        importButton = ttk.Button(self, text="Import CSV", command=lambda: popupmsg("Not functioning yet"))
+
         # Pack the widgets
         self.tree.pack(fill="both", expand=True)
         searchButton.pack(side="left", padx=4, pady=2)
         searchEntry.pack(side="left", padx=4, pady=2)
-
+        newButton.pack(side="left", padx=4, pady=2)
+        importButton.pack(side="left", padx=4, pady=2)
         clearButton.pack(side="left", padx=4, pady=2)
 
     def onFilter(self):
@@ -161,22 +168,32 @@ class NewProduct(tk.Frame):
 
         # Add Buttons
         saveButton = ttk.Button(self, text="Save", command=self.onSave)
+        clearButton =  ttk.Button(self, text="Clear", command=self.clearCmd)
         cancelButton = ttk.Button(self, text="Cancel", command=lambda: controller.show_frame(Overview))
 
         # Pack the widgets
-        cancelButton.grid(row=4, column=1, padx=5)
-        saveButton.grid(row=4, padx=5)
+        cancelButton.grid(row=4, column=1, padx=2)
+        clearButton.grid(row=4, column=2, padx=2)
+        saveButton.grid(row=4, padx=2)
 
         self.te.grid(row=0, column=1, padx=5, pady=5)
         self.qe.grid(row=1, column=1, padx=5, pady=5)
         self.pe.grid(row=2, column=1, padx=5, pady=5)
 
+    def clearCmd(self):
+        """Clear the form"""
+        popupmsg("Not funtioning yet")
+
     def onSave(self):
-        # Gets the user input
-        title = self.te.get()
-        quantity = self.qe.get()
-        price = self.pe.get()
-        self.save(title, quantity, price)
+        # Checks if entry is blank
+        if not self.te.get():
+            popupmsg("Oops, it looks like your book is missing it's title!")
+        else:
+            # Gets the user input
+            title = self.te.get()
+            quantity = self.qe.get()
+            price = self.pe.get()
+            self.save(title, quantity, price)
         
 
     def save(self, title, quantity, price):
