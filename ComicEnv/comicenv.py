@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as tkmes
@@ -106,8 +107,8 @@ class Overview(tk.Frame):
         # Add button for search
         searchButton = ttk.Button(self, text="Search", command=self.onFilter)
         # Add Entry for search
-        searchEntry = ttk.Entry(self)
-        searchEntry.delete(0, last="end")
+        self.searchEntry = ttk.Entry(self)
+        self.searchEntry.delete(0, last="end")
 
         # Add Clear button
         clearButton = ttk.Button(self, text="Clear", command=self.clearCmd)
@@ -121,7 +122,7 @@ class Overview(tk.Frame):
         # Pack the widgets
         self.tree.pack(fill="both", expand=True)
         searchButton.pack(side="left", padx=4, pady=2)
-        searchEntry.pack(side="left", padx=4, pady=2)
+        self.searchEntry.pack(side="left", padx=4, pady=2)
         newButton.pack(side="left", padx=4, pady=2)
         importButton.pack(side="left", padx=4, pady=2)
         clearButton.pack(side="left", padx=4, pady=2)
@@ -219,6 +220,10 @@ class NewProduct(tk.Frame):
 
 app = ComicEnv()
 app.minsize(450, 270)
-app.wm_iconbitmap('comicenv.ico')
+if "nt" == os.name:
+    app.wm_iconbitmap(bitmap = "comicenv.ico")
+else:
+    pass
+#need to turn the icon into a xbm file for Linux compatibility
 app.title("ComicEnv")
 app.mainloop()
