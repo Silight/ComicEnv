@@ -133,11 +133,21 @@ class Overview(tk.Frame):
         self.filter(searchField)
 
     def filter(self, sf):
-        conn = sqlite3.connect("ComicEnv.db")
-        c = conn.cursor()
-        c.execute("FROM cdata SELECT * WHERE (sf) VALUES (?)",
-            (sf))
-        conn.close()
+        """Returns filtered values to treeview"""
+        try:
+            conn = sqlite3.connect("ComicEnv.db")
+            c = conn.cursor()
+            c.execute("SELECT title, quantity, price, date FROM cdata WHERE title=?", (sf,))
+            # title should have a default value to return everything.
+            returnedRows = c.fetchall()
+            for row in returnedRows:
+                pass #Not sure what to put here
+            conn.close()
+        except:
+            popupmsg("Error: filter module error")
+        finally:
+            if conn:
+                conn.close()
         # This is most likely broken. Has not been tested.
 
     def clearCmd(self):
@@ -151,6 +161,7 @@ class Overview(tk.Frame):
 
 
 class LastRecord(tk.Frame):
+    """Update an existing record"""
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -207,15 +218,20 @@ class NewProduct(tk.Frame):
 
     def save(self, title, quantity, price):
         # Saves the user input to the database
-        conn = sqlite3.connect("ComicEnv.db")
-        c = conn.cursor()
-        c.execute("INSERT INTO cdata(unix, datestamp, title, quantity, price) VALUES (?,?,?,?,?)",
-                  (time.time(), date, title, quantity, price))
-        conn.commit()
-        conn.close()
-        self.clearCmd()
-        popupmsg("Success!")
-        # Return to Overviews
+        try:
+            conn = sqlite3.connect("ComicEnv.db")
+            c = conn.cursor()
+            c.execute("INSERT INTO cdata(unix, datestamp, title, quantity, price) VALUES (?,?,?,?,?)",
+                      (time.time(), date, title, quantity, price))
+            conn.commit()
+            conn.close()
+            self.clearCmd()
+            popupmsg("Success!")
+        except:
+            popupmsg("Error: save error")
+        finally:
+            if conn:
+                conn.close()
         
 
 app = ComicEnv()
