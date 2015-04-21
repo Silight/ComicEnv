@@ -6,7 +6,7 @@ import tkinter.filedialog as fileDialog
 import sqlite3
 import datetime
 import time
-import csv
+import csv # Will be used for spreadsheet manipulation
 
 LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
